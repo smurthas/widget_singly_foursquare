@@ -12,9 +12,11 @@ Display a pie chart of or most checked into cities in your sidebar, via your Sin
 
 == Installation ==
 
-Place the widget_singly_foursquare.php file in your /wp-content/plugins/ directory
-and activate through the administration panel, and then go to the widget panel and
-drag it to where you would like to have it!
+Download: https://github.com/smurthas/widget_singly_foursquare/blob/master/widget_singly_foursquare.zip?raw=true
+Upload it to the Plugins section of your WP admin page and then activate the plugin.
+Navigate over to Appearance -> Widgets and drag "Foursquare Singly" to the sidebar on the right.
+Enter your Singly API key (find it at https://singly.com/users/me/settings) and hit save!
+Head to the home and check it out!!!
 
 
 == Screenshots ==
