@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name:  Widget Singly Foursquare
-Plugin URI: https://github.com/smurthas/my-pie-spy
+Plugin URI: https://github.com/smurthas/widget_singly_foursquare
 Description: Display a pie chart of or most checked into cities in your sidebar, via your Singly account!
 Version: 0.0.1
 Author: Simon Murtha-Smith
