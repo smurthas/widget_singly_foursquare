@@ -13,9 +13,15 @@ License: GPL
 Compatibility: WordPress 2.6 with Widget-plugin.
 
 Installation:
-Place the widget_singly_foursquare folder in your /wp-content/plugins/ directory
-and activate through the administration panel, and then go to the widget panel and
-drag it to where you would like to have it!
+
+NOTE: requires php5-curl
+
+Download https://github.com/smurthas/widget_singly_foursquare/blob/master/widget_singly_foursquare.zip?raw=true
+Upload it to the Plugins section of your WP admin page and then activate the plugin.
+Navigate over to Appearance -> Widgets and drag "Foursquare Singly" to the sidebar on the right.
+Enter your Singly API key (find it at https://singly.com/users/me/settings) and hit save!
+Head to the home page and check it out!!!
+
 */
 
 /*  Copyright Simon Murtha-Smith
@@ -138,12 +144,9 @@ function widget_singly_foursquare_init() {
                 }
             }
             
-            $output .= "<div style='display:inline-block; width:200px;' id='widget_singly_foursquare_chart'></div>
+            $output .= "<div style='width:200px; height:300px; z-index:10000' id='widget_singly_foursquare_chart'></div>
                         <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.min.js'></script>
-                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.js'></script>
-                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/highcharts.js'></script>
-                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jqplot.pieRenderer.min.js'></script>
-                        <link rel='stylesheet' href='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.css'/>";
+                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/highcharts.js'></script>";
                         
             $output .= "
                         <script type='text/javascript'>var cities = " . json_encode($cities_arr) . ";

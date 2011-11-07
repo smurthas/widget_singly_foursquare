@@ -30,33 +30,26 @@ function createBins(arr, bins) {
     return shortArray;
 }
 
-function doPlot(contaner, title, arr) {
-    arr.sort(binSort);
-    doHighChart(contaner, title, createBins(arr));
+function doPlot(args) {
+    args.originalData.sort(binSort);
+    args.data = createBins(args.originalData);
+    doHighChart(args);
 }
 
 $(document).ready(function() {
-    doPlot('widget_singly_foursquare_chart', 'Checkins by State', all);
-    // doPlot('widget_singly_foursquare_cities_chart', 'Cities', cities);
+    doPlot({
+        container: 'widget_singly_foursquare_chart', 
+        titleText: 'Checkins by State',
+        originalData: all
+    });
 });
 
-
-function doJQPlot(contaner, titleText, data) {
-    jQuery.jqplot (contaner, [data], { 
-        seriesDefaults: {
-            // Make this a pie chart.
-            renderer: jQuery.jqplot.PieRenderer, 
-            rendererOptions: {
-                // Put data labels on the pie slices.
-                // By default, labels show the percentage of the slice.
-                showDataLabels: true
-            }
-        }
-        , legend: { show:true, location: 'e' }
-    });
-}
-
-function doHighChart(container, titleText, data) {
+var plotStack = [];
+function doHighChart(args) {
+    var container = args.container;
+    var titleText = args.titleText;
+    var data = args.data;
+    var subtitle = args.subtitle;
     chart = new Highcharts.Chart({
         chart: {
             renderTo: container,
@@ -65,7 +58,13 @@ function doHighChart(container, titleText, data) {
             plotShadow: false
         },
         title: {
-            text: titleText
+            text: titleText,
+            margin:8
+        },
+        subtitle: {
+            text: subtitle,
+            align: 'left',
+            y:15
         },
         tooltip: {
             formatter: function() {
@@ -74,6 +73,7 @@ function doHighChart(container, titleText, data) {
         },
         plotOptions: {
             pie: {
+                size:'85%',
                 allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
@@ -94,21 +94,32 @@ function doHighChart(container, titleText, data) {
             point: {
                 events: {
                     click: function() {
+                        plotStack.push(args);
                         var key = this.config[0];
                         var arr;
                         var msg = 'Checkins in ' + key;
+                        var subtitle = '<a href="javascript:doPlot(plotStack.pop());">&lt;&lt;</a>';
                         if(states[key])
                             arr = states[key];
                         else if(cities[key]) {
                             arr = cities[key];
                             msg = key;
                         }
-                        doPlot('widget_singly_foursquare_chart', msg, arr);
+                        var newArgs = {
+                            container: 'widget_singly_foursquare_chart', 
+                            titleText: msg,
+                            originalData: arr,
+                            subtitle:subtitle
+                        }
+                        doPlot(newArgs);
                         // else //others
                         //     doPlot('widget_singly_foursquare_chart', 'Other', others);
                     }
                 }
             }
-        }]
+        }],
+        credits: {
+            enabled: false
+        }
     });
 }
