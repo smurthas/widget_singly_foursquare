@@ -162,7 +162,7 @@ function widget_singly_foursquare_init() {
             $output .= '<!-- cached -->';
         }
 
-        echo $before_widget . $before_title . $title . $after_title;
+        // echo $before_widget . $before_title . $title . $after_title;
         echo $output;
         echo $after_widget;
     } /* widget_singly_foursquare() */

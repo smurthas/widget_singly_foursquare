@@ -119,7 +119,8 @@ function doHighChart(args) {
             }
         }],
         credits: {
-            enabled: false
+            text: "powered by Singly",
+            href: "http://singly.com"
         }
     });
 }
