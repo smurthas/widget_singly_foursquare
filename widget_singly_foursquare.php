@@ -42,11 +42,6 @@ foreach ($states_arr as $abbr => $state) {
     $states_abbr[$state] = $abbr;
 }
 
-
-
-class widget_singly_histobin {
-}
-
 function widget_singly_foursquare_init() {
     
     if ( !function_exists('register_sidebar_widget') )
@@ -57,6 +52,7 @@ function widget_singly_foursquare_init() {
     }
     
     function widget_singly_foursquare( $args ) {
+        
         global $API_HOST, $states_abbr;
         extract($args);
 
@@ -90,41 +86,64 @@ function widget_singly_foursquare_init() {
             
             $cities;
             $states;
+            $all;
             foreach( $twitters as $tw ) {
+                $venueName = $tw->venue->name;
                 $city = $tw->venue->location->city;
                 $state = $tw->venue->location->state;
-                if( $state && $states_abbr[$state] ) {
+                if( $state !== "" && $states_abbr[$state] ) {
                     $state = $states_abbr[$state];
                 }
-                if( $state ) {
+                if( $state !== "" ) {
                     $state = strtoupper($state);
                     $city .= ', ' . $state;
                 }
-                if( !$cities[$city] ) {
-                    $cities[$city] = 0;
-                }
-                if( !$states[$state] ) {
-                    $states[$state] = 0;
-                }
-                $cities[$city] += 1;
-                $states[$state] += 1;
+                if( !$all[$state] )
+                    $all[$state] = 0;
+                
+                if( !$states[$state] )
+                    $states[$state][$city] = 0;
+                
+                if( !$cities[$city][$venueName] )
+                    $cities[$city][$venueName] = 0;
+                
+                $cities[$city][$venueName] += 1;
+                $states[$state][$city] += 1;
+                $all[$state] += 1;
             }
-            // echo json_encode($cities);
-            // echo json_encode($states);
+            $all_arr = array();
+            foreach($all as $state => $count)
+                $all_arr[] = array($state, $count);
             
-            $state_arr = array();
-            foreach($states as $state => $count) {
-                $state_arr[] = array($state, $count);
+            $states_arr = array();
+            foreach($states as $state => $tmp) {
+                $thisState = $states[$state];
+                foreach($thisState as $city => $tmp2) {
+                    $states_arr[$state][] = array($city, $states[$state][$city]);
+                }
             }
             
-            // echo json_encode($state_arr);
-            $output .= "<div id='widget_singly_foursquare_states_chart'></div>";
-            $output .= "<script type='text/javascript' src='http://code.jquery.com/jquery-1.7.min.js'></script>";
-            $output .= "<script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.js'></script>";
-            $output .= "<script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jqplot.pieRenderer.min.js'></script>";
-            $output .= "<link rel='stylesheet' href='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.css'/>";
-            $output .= "<script type='text/javascript'>var states = " . json_encode($state_arr) . "; var MAX_BINS = 4;</script>";
-            $output .= "<script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/plot.js'></script>";
+            $cities_arr = array();
+            foreach($cities as $city => $tmp) {
+                $thisCity = $cities[$city];
+                foreach($thisCity as $venue => $tmp2) {
+                    $cities_arr[$city][] = array($venue, $cities[$city][$venue]);
+                }
+            }
+            
+            $output .= "<div style='display:inline-block; width:200px;' id='widget_singly_foursquare_chart'></div>
+                        <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.min.js'></script>
+                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.js'></script>
+                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/highcharts.js'></script>
+                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/jqplot.pieRenderer.min.js'></script>
+                        <link rel='stylesheet' href='wp-content/plugins/widget_singly_foursquare/jquery.jqplot.min.css'/>";
+                        
+            $output .= "
+                        <script type='text/javascript'>var cities = " . json_encode($cities_arr) . ";
+                                                       var states = " . json_encode($states_arr) . "; 
+                                                       var all = " . json_encode($all_arr) . "; 
+                                                       var MAX_BINS = 12;</script>
+                        <script type='text/javascript' src='wp-content/plugins/widget_singly_foursquare/plot.js'></script>";
             $options['widget_singly_foursquare_option_cached_time'] = time();
             $options['widget_singly_foursquare_option_cached_output'] = $output;
             update_option('widget_singly_foursquare', $options);
@@ -133,7 +152,6 @@ function widget_singly_foursquare_init() {
             $output .= '<!-- cached -->';
         }
 
-        // These lines generate the output
         echo $before_widget . $before_title . $title . $after_title;
         echo $output;
         echo $after_widget;
