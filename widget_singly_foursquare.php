@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name:  Widget Singly Foursquare
-Plugin URI: https://github.com/smurthas/widget_singly_foursquare
-Description: Display your tweets in your sidebar, via your Singly account!
+Plugin URI: https://github.com/smurthas/my-pie-spy
+Description: Display a pie chart of or most checked into cities in your sidebar, via your Singly account!
 Version: 0.0.1
 Author: Simon Murtha-Smith
 Author URI: http://smurthas.com
