@@ -35,8 +35,21 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-$API_HOST = 'http://localhost:8042/';
-$states_arr  = array('AL'=>"Alabama",'AK'=>"Alaska",'AZ'=>"Arizona",'AR'=>"Arkansas",'CA'=>"California",'CO'=>"Colorado",'CT'=>"Connecticut",'DE'=>"Delaware",'FL'=>"Florida",'GA'=>"Georgia",'HI'=>"Hawaii",'ID'=>"Idaho",'IL'=>"Illinois", 'IN'=>"Indiana", 'IA'=>"Iowa",  'KS'=>"Kansas",'KY'=>"Kentucky",'LA'=>"Louisiana",'ME'=>"Maine",'MD'=>"Maryland", 'MA'=>"Massachusetts",'MI'=>"Michigan",'MN'=>"Minnesota",'MS'=>"Mississippi",'MO'=>"Missouri",'MT'=>"Montana",'NE'=>"Nebraska",'NV'=>"Nevada",'NH'=>"New Hampshire",'NJ'=>"New Jersey",'NM'=>"New Mexico",'NY'=>"New York",'NC'=>"North Carolina",'ND'=>"North Dakota",'OH'=>"Ohio",'OK'=>"Oklahoma", 'OR'=>"Oregon",'PA'=>"Pennsylvania",'RI'=>"Rhode Island",'SC'=>"South Carolina",'SD'=>"South Dakota",'TN'=>"Tennessee",'TX'=>"Texas",'UT'=>"Utah",'VT'=>"Vermont",'VA'=>"Virginia",'WA'=>"Washington",'DC'=>"Washington D.C.",'WV'=>"West Virginia",'WI'=>"Wisconsin",'WY'=>"Wyoming");
+// $API_HOST = 'http://localhost:8042/';
+$API_HOST = 'https://api.singly.com/';
+$states_arr  = array('AL'=>"Alabama",'AK'=>"Alaska",'AZ'=>"Arizona",'AR'=>"Arkansas",
+                     'CA'=>"California",'CO'=>"Colorado",'CT'=>"Connecticut",'DE'=>"Delaware",
+                     'FL'=>"Florida",'GA'=>"Georgia",'HI'=>"Hawaii",'ID'=>"Idaho",'IL'=>"Illinois", 
+                     'IN'=>"Indiana", 'IA'=>"Iowa",  'KS'=>"Kansas",'KY'=>"Kentucky",
+                     'LA'=>"Louisiana",'ME'=>"Maine",'MD'=>"Maryland", 'MA'=>"Massachusetts",
+                     'MI'=>"Michigan",'MN'=>"Minnesota",'MS'=>"Mississippi",'MO'=>"Missouri",
+                     'MT'=>"Montana",'NE'=>"Nebraska",'NV'=>"Nevada",'NH'=>"New Hampshire",
+                     'NJ'=>"New Jersey",'NM'=>"New Mexico",'NY'=>"New York",'NC'=>"North Carolina",
+                     'ND'=>"North Dakota",'OH'=>"Ohio",'OK'=>"Oklahoma", 'OR'=>"Oregon",
+                     'PA'=>"Pennsylvania",'RI'=>"Rhode Island",'SC'=>"South Carolina",
+                     'SD'=>"South Dakota",'TN'=>"Tennessee",'TX'=>"Texas",'UT'=>"Utah",
+                     'VT'=>"Vermont",'VA'=>"Virginia",'WA'=>"Washington",'DC'=>"Washington D.C.",
+                     'WV'=>"West Virginia",'WI'=>"Wisconsin",'WY'=>"Wyoming");
 $states_abbr = array();
 foreach ($states_arr as $abbr => $state) {
     $states_abbr[$state] = $abbr;
@@ -52,9 +65,7 @@ function widget_singly_foursquare_init() {
     }
     
     function widget_singly_foursquare( $args ) {
-        
         global $API_HOST, $states_abbr;
-        extract($args);
 
         $options = get_option('widget_singly_foursquare');
         $title = $options['widget_singly_foursquare_title'];
@@ -66,11 +77,9 @@ function widget_singly_foursquare_init() {
         // section main logic from here
         $twitters = false;
         $cached_time = $options['widget_singly_foursquare_option_cached_time'];
-        // if( $cached_time + 300 < time() ) {      // once at 5 min.
-            
-            $_jsonfilestr = $API_HOST . 'synclets/foursquare/getCurrent/checkin';
-            // $_jsonfilestr = $API_HOST . $_api_key . '/synclets/foursquare/getCurrent/checkin';
-            // echo $_jsonfilestr;
+        if( $cached_time + 300 < time() ) {      // once at 5 min.
+            // $_jsonfilestr = $API_HOST . 'synclets/foursquare/getCurrent/checkin';
+            $_jsonfilestr = $API_HOST . $_api_key . '/synclets/foursquare/getCurrent/checkin';
             $_twitterCount = 3;
             $curl = curl_init();
             curl_setopt ($curl, CURLOPT_URL, $_jsonfilestr);
@@ -78,11 +87,9 @@ function widget_singly_foursquare_init() {
             $result = curl_exec ($curl);
             curl_close ($curl);
             $twitters = json_decode($result);
-        // }
+        }
 
         if( $twitters ) {
-            // fix 0.1.2 - support overflow on IE 6
-            // $output .= '<div id="twitter_time_line"  style="width:100%; overflow:hidden;" >';
             
             $cities;
             $states;
